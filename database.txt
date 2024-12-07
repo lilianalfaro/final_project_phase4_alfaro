@@ -1,0 +1,31 @@
+Table: safety_observations
+Columns:
+safety_observation_id int AI PK
+date date
+time time
+location varchar(255)
+commodity_type enum('Commercial Truck','Firetruck','Box Van')
+description text
+severity enum('Low','Medium','High')
+status enum('Open','Under Review','Resolved')
+
+Table: employees
+Columns:
+employee_id int AI PK
+first_name varchar(100)
+last_name varchar(100)
+email varchar(255)
+role enum('Observer','Manager','Supervisor')
+date_hired date
+
+Table: actions
+Columns:
+action_id int AI PK
+safety_observation_id int
+employee_id int
+action_date date
+action_description text
+action_status enum('Pending','In Progress','Completed')
+
+FOREIGN KEY (safety_observation_id)
+FOREIGN KEY (employee_id)
