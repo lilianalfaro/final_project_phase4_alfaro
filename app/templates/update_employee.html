@@ -1,0 +1,27 @@
+<h1>Update Employee</h1>
+<form action="{{ url_for('employees.update_employee', employee_id=employee[0]) }}" method="POST">
+    <div class="mb-3">
+        <label for="first_name" class="form-label">First Name</label>
+        <input type="text" name="first_name" id="first_name" class="form-control" value="{{ employee[1] }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="last_name" class="form-label">Last Name</label>
+        <input type="text" name="last_name" id="last_name" class="form-control" value="{{ employee[2] }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" name="email" id="email" class="form-control" value="{{ employee[3] }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="role" class="form-label">Role</label>
+        <select name="role" id="role" class="form-select">
+            <option value="Observer" {% if employee[4] == "Observer" %}selected{% endif %}>Observer</option>
+            <option value="Manager" {% if employee[4] == "Manager" %}selected{% endif %}>Manager</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="date_hired" class="form-label">Date Hired</label>
+        <input type="date" name="date_hired" id="date_hired" class="form-control" value="{{ employee[5] }}" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Update Employee</button>
+</form>

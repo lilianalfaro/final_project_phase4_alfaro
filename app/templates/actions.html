@@ -3,6 +3,156 @@
 {% block title %}Actions{% endblock %}
 
 {% block content %}
-<h1>Actions</h1>
-<p>Placeholder for Actions content.</p>
+<div class="container mt-4">
+    <h1 class="mb-4">Actions</h1>
+
+    <!-- Add Action Button -->
+    <button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addActionModal">
+        Add New Action
+    </button>
+
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Observation</th>
+                <th>Assigned Employee</th>
+                <th>Action Date</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for act in actions %}
+            <tr>
+                <td>{{ act['action_id'] }}</td>
+                <td>{{ act['safety_observation_id'] }}</td>
+                <td>{{ act['employee_id'] }}</td>
+                <td>{{ act['action_date'] }}</td>
+                <td>{{ act['action_description'] }}</td>
+                <td>{{ act['action_status'] }}</td>
+                <td>
+                    <!-- Edit Button -->
+                    <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#updateActionModal-{{ act['action_id'] }}">
+                        Edit
+                    </button>
+                    <!-- Delete Form -->
+                    <form action="{{ url_for('actions.delete_action', action_id=act['action_id']) }}" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+
+            <!-- Update Action Modal -->
+            <div class="modal fade" id="updateActionModal-{{ act['action_id'] }}" tabindex="-1" aria-labelledby="updateActionModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="updateActionModalLabel">Update Action</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="{{ url_for('actions.update_action', action_id=act['action_id']) }}" method="POST">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="safety_observation_id" class="form-label">Safety Observation</label>
+                                    <select name="safety_observation_id" id="safety_observation_id" class="form-select">
+                                        {% for obs in safety_observations %}
+                                        <option value="{{ obs['safety_observation_id'] }}" {% if obs['safety_observation_id'] == act['safety_observation_id'] %}selected{% endif %}>
+                                            {{ obs['description'] }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="employee_id" class="form-label">Assigned Employee</label>
+                                    <select name="employee_id" id="employee_id" class="form-select">
+                                        {% for emp in employees %}
+                                        <option value="{{ emp['employee_id'] }}" {% if emp['employee_id'] == act['employee_id'] %}selected{% endif %}>
+                                            {{ emp['first_name'] }} {{ emp['last_name'] }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="action_date" class="form-label">Action Date</label>
+                                    <input type="date" name="action_date" id="action_date" class="form-control" value="{{ act['action_date'] }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="action_description" class="form-label">Action Description</label>
+                                    <textarea name="action_description" id="action_description" class="form-control" rows="3" required>{{ act['action_description'] }}</textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="action_status" class="form-label">Action Status</label>
+                                    <select name="action_status" id="action_status" class="form-select">
+                                        <option value="Open" {% if act['action_status'] == 'Open' %}selected{% endif %}>Open</option>
+                                        <option value="In Progress" {% if act['action_status'] == 'In Progress' %}selected{% endif %}>In Progress</option>
+                                        <option value="Completed" {% if act['action_status'] == 'Completed' %}selected{% endif %}>Completed</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Update Action</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Add Action Modal -->
+    <div class="modal fade" id="addActionModal" tabindex="-1" aria-labelledby="addActionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addActionModalLabel">Add New Action</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ url_for('actions.list_and_create_actions') }}" method="POST">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="safety_observation_id" class="form-label">Safety Observation</label>
+                            <select name="safety_observation_id" id="safety_observation_id" class="form-select">
+                                {% for obs in safety_observations %}
+                                <option value="{{ obs['safety_observation_id'] }}">{{ obs['description'] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="employee_id" class="form-label">Assigned Employee</label>
+                            <select name="employee_id" id="employee_id" class="form-select">
+                                {% for emp in employees %}
+                                <option value="{{ emp['employee_id'] }}">{{ emp['first_name'] }} {{ emp['last_name'] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="action_date" class="form-label">Action Date</label>
+                            <input type="date" name="action_date" id="action_date" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="action_description" class="form-label">Action Description</label>
+                            <textarea name="action_description" id="action_description" class="form-control" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="action_status" class="form-label">Action Status</label>
+                            <select name="action_status" id="action_status" class="form-select">
+                                <option value="Open">Open</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add Action</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
