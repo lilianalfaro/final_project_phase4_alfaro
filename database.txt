@@ -3,8 +3,11 @@ Columns:
 safety_observation_id int AI PK
 date date
 time time
-location varchar(255)
-commodity_type enum('Commercial Truck','Firetruck','Box Van')
+location enum('Milly','LaGrange')
+commodity_type enum('Truck','Fire','Van')
+operation enum('Op 10: Rear Frames','Op 20: Sub Frames','Op 30: Side Walls','Op 35: Front Wall','Op 40: Flooring','Op 50: Boxing','Op 60: Lining','Op 70: Roofing','Op 80: Mounting','Op 85: Specialty','Op 90: Liftgate','Op 100: Paint','Op 120: QC Final Inspection','Body Prep','Paint','Fabrication','Console','Op 10: Pre-Wire','Op 20: Body Install','Op 30: Plumbing','Op 40: Electrical Final','Op 50: Final Inspection','QRT','Detail','Op 5: Pre-Wash','Op 10: Welding','Op 20: Truck Install','Op 30: Paint','Op 40: Wash Way','Op 50: QC Final Inspection')
+category enum('Safety','Delivery','Quality','CI','Cost')
+sub_category enum('Electrical','Spill','Trip Hazard','Unsafe Behavior','Leaks','Poor Equipment')
 description text
 severity enum('Low','Medium','High')
 status enum('Open','Under Review','Resolved')
@@ -15,7 +18,7 @@ employee_id int AI PK
 first_name varchar(100)
 last_name varchar(100)
 email varchar(255)
-role enum('Observer','Manager','Supervisor')
+role enum('Observer','Manager','Supervisor','Admin','Lead','Inspector')
 date_hired date
 
 Table: actions
@@ -25,7 +28,4 @@ safety_observation_id int
 employee_id int
 action_date date
 action_description text
-action_status enum('Pending','In Progress','Completed')
-
-FOREIGN KEY (safety_observation_id)
-FOREIGN KEY (employee_id)
+action_status enum('Plan','Do','Check','Action')

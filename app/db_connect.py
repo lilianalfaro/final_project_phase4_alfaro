@@ -8,10 +8,10 @@ def get_db():
         g.db = pymysql.connect(
             # Database configuration
             # Configure MySQL
-            host = 'alv4v3hlsipxnujn.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
-            user = 'e5232ja9qlp7r2w0',
-            password = 'md4sk7o0v0c1z2lt',
-            database = 'qw9pmqscwsgdru4v',
+            host = 'k2fqe1if4c7uowsh.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
+            user = 'q5apqif76ex837na',
+            password = 'sbk3e6i1lggepbv4',
+            database = 'lcgxz9mfsbqv5gcg',
             cursorclass=pymysql.cursors.DictCursor  # Set the default cursor class to DictCursor
         )
     return g.db
@@ -28,6 +28,3 @@ def close_db(exception=None):
     if db is not None and not db._closed:
         print("Closing database connection.")
         db.close()
-
-
-

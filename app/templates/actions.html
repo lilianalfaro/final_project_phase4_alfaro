@@ -85,9 +85,10 @@
                                 <div class="mb-3">
                                     <label for="action_status" class="form-label">Action Status</label>
                                     <select name="action_status" id="action_status" class="form-select">
-                                        <option value="Open" {% if act['action_status'] == 'Open' %}selected{% endif %}>Open</option>
-                                        <option value="In Progress" {% if act['action_status'] == 'In Progress' %}selected{% endif %}>In Progress</option>
-                                        <option value="Completed" {% if act['action_status'] == 'Completed' %}selected{% endif %}>Completed</option>
+                                        <option value="Plan" {% if act['action_status'] == 'Plan' %}selected{% endif %}>Plan</option>
+                                        <option value="Do" {% if act['action_status'] == 'Do' %}selected{% endif %}>Do</option>
+                                        <option value="Check" {% if act['action_status'] == 'Check' %}selected{% endif %}>Check</option>
+                                        <option value="Action" {% if act['action_status'] == 'Action' %}selected{% endif %}>Action</option>
                                     </select>
                                 </div>
                             </div>
@@ -140,9 +141,10 @@
                         <div class="mb-3">
                             <label for="action_status" class="form-label">Action Status</label>
                             <select name="action_status" id="action_status" class="form-select">
-                                <option value="Open">Open</option>
-                                <option value="In Progress">In Progress</option>
-                                <option value="Completed">Completed</option>
+                                <option value="Plan">Plan</option>
+                                <option value="Do">Do</option>
+                                <option value="Check">Check</option>
+                                <option value="Action">Action</option>
                             </select>
                         </div>
                     </div>

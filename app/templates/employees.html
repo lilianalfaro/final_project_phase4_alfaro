@@ -6,6 +6,24 @@
 <div class="container mt-4">
     <h1 class="mb-4">Employees</h1>
 
+    <!-- Filter Section -->
+    <form class="row mb-4" method="GET" action="{{ url_for('employees.list_and_create_employees') }}">
+        <div class="col-md-3">
+            <label for="filter_role" class="form-label">Filter by Role</label>
+            <select name="filter_role" id="filter_role" class="form-select">
+                <option value="">All Roles</option>
+                <option value="Observer" {% if request.args.get('filter_role') == 'Observer' %}selected{% endif %}>Observer</option>
+                <option value="Manager" {% if request.args.get('filter_role') == 'Manager' %}selected{% endif %}>Manager</option>
+                <option value="Admin" {% if request.args.get('filter_role') == 'Admin' %}selected{% endif %}>Admin</option>
+                <option value="Supervisor" {% if request.args.get('filter_role') == 'Supervisor' %}selected{% endif %}>Supervisor</option>
+                <option value="Inspector" {% if request.args.get('filter_role') == 'Inspector' %}selected{% endif %}>Inspector</option>
+            </select>
+        </div>
+        <div class="col-md-3 align-self-end">
+            <button type="submit" class="btn btn-primary">Apply Filter</button>
+        </div>
+    </form>
+
     <!-- Add Employee Button -->
     <button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
         Add New Employee
@@ -71,6 +89,9 @@
                                     <select name="role" id="role" class="form-select">
                                         <option value="Observer" {% if emp['role'] == 'Observer' %}selected{% endif %}>Observer</option>
                                         <option value="Manager" {% if emp['role'] == 'Manager' %}selected{% endif %}>Manager</option>
+                                        <option value="Admin" {% if emp['role'] == 'Admin' %}selected{% endif %}>Admin</option>
+                                        <option value="Supervisor" {% if emp['role'] == 'Supervisor' %}selected{% endif %}>Supervisor</option>
+                                        <option value="Inspector" {% if emp['role'] == 'Inspector' %}selected{% endif %}>Inspector</option>
                                     </select>
                                 </div>
                                 <div class="mb-3">

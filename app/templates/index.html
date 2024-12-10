@@ -1,10 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<h1>Safety Observations</h1>
-<p>This is the home page for tracking safety observations and managing employees.</p>
-<br>
-<img src="{{ url_for('static', filename='assets/foutsbroslogo.webp') }}" alt="FoutsBrosIncLogo" width="300">
-
+<div class="container mt-5">
+    <h1 class="mb-4">Safety Observations App</h1>
+    <p>This application allows you to track safety observations, manage employees, and monitor actions taken to improve safety standards.</p>
+    <img src="{{ url_for('static', filename='assets/foutsbroslogo.webp') }}" alt="Fouts Bros Inc Logo" width="300">
+</div>
 {% endblock %}
