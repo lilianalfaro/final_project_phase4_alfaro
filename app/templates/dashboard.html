@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Dashboard</h1>
+    <div class="row">
+        <!-- Observations by Severity -->
+        <div class="col-md-6">
+            <div id="chart-severity" style="height: 400px;"></div>
+        </div>
+        <!-- Observations by Category -->
+        <div class="col-md-6">
+            <div id="chart-category" style="height: 400px;"></div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <!-- Observations Over Time -->
+        <div class="col-md-12">
+            <div id="chart-time" style="height: 400px;"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    // Fetch and render Observations by Severity
+    fetch('/api/observations_by_severity')
+        .then(response => response.json())
+        .then(data => {
+            const labels = data.map(item => item.severity);
+            const values = data.map(item => item.count);
+            Plotly.newPlot('chart-severity', [{
+                type: 'pie',
+                labels: labels,
+                values: values
+            }], {title: 'Observations by Severity'});
+        });
+
+    // Fetch and render Observations by Category
+    fetch('/api/observations_by_category')
+        .then(response => response.json())
+        .then(data => {
+            const labels = data.map(item => item.category);
+            const values = data.map(item => item.count);
+            Plotly.newPlot('chart-category', [{
+                type: 'bar',
+                x: labels,
+                y: values
+            }], {title: 'Observations by Category'});
+        });
+
+    // Fetch and render Observations Over Time
+    fetch('/api/observations_over_time')
+        .then(response => response.json())
+        .then(data => {
+            const x = data.map(item => item.observation_date);
+            const y = data.map(item => item.count);
+            Plotly.newPlot('chart-time', [{
+                type: 'scatter',
+                mode: 'lines+markers',
+                x: x,
+                y: y
+            }], {title: 'Observations Over Time'});
+        });
+</script>
+{% endblock %}

@@ -1,27 +1,38 @@
-<h1>Update Employee</h1>
+<h1 class="mt-4 mb-4">Update Employee</h1>
 <form action="{{ url_for('employees.update_employee', employee_id=employee[0]) }}" method="POST">
     <div class="mb-3">
         <label for="first_name" class="form-label">First Name</label>
         <input type="text" name="first_name" id="first_name" class="form-control" value="{{ employee[1] }}" required>
+        <div class="form-text">Enter the employee's first name.</div>
     </div>
     <div class="mb-3">
         <label for="last_name" class="form-label">Last Name</label>
         <input type="text" name="last_name" id="last_name" class="form-control" value="{{ employee[2] }}" required>
+        <div class="form-text">Enter the employee's last name.</div>
     </div>
     <div class="mb-3">
         <label for="email" class="form-label">Email</label>
         <input type="email" name="email" id="email" class="form-control" value="{{ employee[3] }}" required>
+        <div class="form-text">Enter a valid email address.</div>
     </div>
     <div class="mb-3">
         <label for="role" class="form-label">Role</label>
         <select name="role" id="role" class="form-select">
             <option value="Observer" {% if employee[4] == "Observer" %}selected{% endif %}>Observer</option>
             <option value="Manager" {% if employee[4] == "Manager" %}selected{% endif %}>Manager</option>
+            <option value="Admin" {% if employee[4] == "Admin" %}selected{% endif %}>Admin</option>
+            <option value="Supervisor" {% if employee[4] == "Supervisor" %}selected{% endif %}>Supervisor</option>
+            <option value="Inspector" {% if employee[4] == "Inspector" %}selected{% endif %}>Inspector</option>
         </select>
+        <div class="form-text">Select the role for the employee.</div>
     </div>
     <div class="mb-3">
         <label for="date_hired" class="form-label">Date Hired</label>
         <input type="date" name="date_hired" id="date_hired" class="form-control" value="{{ employee[5] }}" required>
+        <div class="form-text">Select the date the employee was hired.</div>
     </div>
-    <button type="submit" class="btn btn-primary">Update Employee</button>
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Update Employee</button>
+        <a href="{{ url_for('employees.list_employees') }}" class="btn btn-secondary">Cancel</a>
+    </div>
 </form>

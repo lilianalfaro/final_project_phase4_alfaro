@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Safety Observations Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f4f4f4;
+            text-align: left;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Safety Observations Report</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Location</th>
+                <th>Commodity</th>
+                <th>Operation</th>
+                <th>Severity</th>
+                <th>Status</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for observation in observations %}
+            <tr>
+                <td>{{ observation['safety_observation_id'] }}</td>
+                <td>{{ observation['date'] }}</td>
+                <td>{{ observation['time'] }}</td>
+                <td>{{ observation['location'] }}</td>
+                <td>{{ observation['commodity'] }}</td>
+                <td>{{ observation['operation'] }}</td>
+                <td>{{ observation['severity'] }}</td>
+                <td>{{ observation['status'] }}</td>
+                <td>{{ observation['description'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

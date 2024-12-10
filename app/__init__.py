@@ -10,12 +10,15 @@ app.secret_key = 'your-secret'  # Replace with an environment variable
 from app.blueprints.safety_observations import safety_observations
 from app.blueprints.employees import employees
 from app.blueprints.actions import actions
+from app.blueprints.dashboard import dashboard
+from app.blueprints.reports import reports
 # from app.blueprints.runners import runners
 
 app.register_blueprint(safety_observations)
 app.register_blueprint(employees)
-app.register_blueprint(actions)
-
+app.register_blueprint(dashboard)
+app.register_blueprint(reports)
+app.register_blueprint(actions, url_prefix='/actions')
 
 
 from . import routes

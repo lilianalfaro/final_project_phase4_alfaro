@@ -26,20 +26,26 @@ def list_and_create_actions():
         flash('Action added successfully!', 'success')
         return redirect(url_for('actions.list_and_create_actions'))
 
-    # Fetch actions with optional filters
-    filter_status = request.args.get('filter_status', '')
-    query = 'SELECT * FROM actions WHERE 1=1'
-    params = []
-    if filter_status:
-        query += ' AND action_status = %s'
-        params.append(filter_status)
-    cursor.execute(query, params)
+    # Fetch actions with JOINs
+    query = '''
+        SELECT 
+            a.action_id,
+            s.description AS observation_description,
+            CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
+            a.action_date,
+            a.action_description,
+            a.action_status
+        FROM actions a
+        LEFT JOIN safety_observations s ON a.safety_observation_id = s.safety_observation_id
+        LEFT JOIN employees e ON a.employee_id = e.employee_id
+    '''
+    cursor.execute(query)
     all_actions = cursor.fetchall()
 
     # Fetch dropdown data
-    cursor.execute('SELECT * FROM safety_observations')
+    cursor.execute('SELECT safety_observation_id, description FROM safety_observations')
     safety_observations = cursor.fetchall()
-    cursor.execute('SELECT * FROM employees')
+    cursor.execute('SELECT employee_id, CONCAT(first_name, " ", last_name) AS employee_name FROM employees')
     employees = cursor.fetchall()
 
     return render_template(
@@ -48,3 +54,12 @@ def list_and_create_actions():
         safety_observations=safety_observations,
         employees=employees
     )
+
+@actions.route('/delete_action/<int:action_id>', methods=['POST'])
+def delete_action(action_id):
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute('DELETE FROM actions WHERE action_id = %s', (action_id,))
+    db.commit()
+    flash('Action deleted successfully!', 'danger')
+    return redirect(url_for('actions.list_and_create_actions'))

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Reports{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Generate Safety Observations Report</h1>
+
+    <!-- Filters Form -->
+    <form action="/reports/generate_report" method="POST">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="commodity" class="form-label">Commodity</label>
+                <select name="commodity" id="commodity" class="form-select">
+                    <option value="">All</option>
+                    <option value="Van">Van</option>
+                    <option value="Truck">Truck</option>
+                    <option value="Fire">Fire</option>
+                </select>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="severity" class="form-label">Severity</label>
+                <select name="severity" id="severity" class="form-select">
+                    <option value="">All</option>
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                </select>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="status" class="form-label">Status</label>
+                <select name="status" id="status" class="form-select">
+                    <option value="">All</option>
+                    <option value="Open">Open</option>
+                    <option value="Under Review">Under Review</option>
+                    <option value="Resolved">Resolved</option>
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Generate Report</button>
+    </form>
+
+    <!-- Observations Table -->
+    <table class="table table-striped mt-4">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Location</th>
+                <th>Commodity</th>
+                <th>Operation</th>
+                <th>Severity</th>
+                <th>Status</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for observation in observations %}
+            <tr>
+                <td>{{ observation['safety_observation_id'] }}</td>
+                <td>{{ observation['date'] }}</td>
+                <td>{{ observation['time'] }}</td>
+                <td>{{ observation['location'] }}</td>
+                <td>{{ observation['commodity'] }}</td>
+                <td>{{ observation['operation'] }}</td>
+                <td>{{ observation['severity'] }}</td>
+                <td>{{ observation['status'] }}</td>
+                <td>{{ observation['description'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

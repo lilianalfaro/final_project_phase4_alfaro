@@ -1,36 +1,49 @@
-<h1>Update Action</h1>
+<h1 class="mt-4 mb-4">Update Action</h1>
 <form action="{{ url_for('actions.update_action', action_id=action[0]) }}" method="POST">
     <div class="mb-3">
         <label for="safety_observation_id" class="form-label">Safety Observation</label>
         <select name="safety_observation_id" id="safety_observation_id" class="form-select">
-            {% for obs in safety_observations %}
-            <option value="{{ obs[0] }}" {% if obs[0] == action[1] %}selected{% endif %}>{{ obs[1] }}</option>
+            {% for observation in safety_observations %}
+            <option value="{{ observation['safety_observation_id'] }}" {% if observation['safety_observation_id'] == action[1] %}selected{% endif %}>
+                {{ observation['description'] }}
+            </option>
             {% endfor %}
         </select>
+        <div class="form-text">Select the related safety observation.</div>
     </div>
     <div class="mb-3">
         <label for="employee_id" class="form-label">Assigned Employee</label>
         <select name="employee_id" id="employee_id" class="form-select">
-            {% for emp in employees %}
-            <option value="{{ emp[0] }}" {% if emp[0] == action[2] %}selected{% endif %}>{{ emp[1] }} {{ emp[2] }}</option>
+            {% for employee in employees %}
+            <option value="{{ employee['employee_id'] }}" {% if employee['employee_id'] == action[2] %}selected{% endif %}>
+                {{ employee['first_name'] }} {{ employee['last_name'] }}
+            </option>
             {% endfor %}
         </select>
+        <div class="form-text">Select the employee assigned to this action.</div>
     </div>
     <div class="mb-3">
         <label for="action_date" class="form-label">Action Date</label>
         <input type="date" name="action_date" id="action_date" class="form-control" value="{{ action[3] }}" required>
+        <div class="form-text">Enter the date of the action.</div>
     </div>
     <div class="mb-3">
-        <label for="action_description" class="form-label">Description</label>
-        <textarea name="action_description" id="action_description" class="form-control" required>{{ action[4] }}</textarea>
+        <label for="action_description" class="form-label">Action Description</label>
+        <textarea name="action_description" id="action_description" class="form-control" rows="3" required>{{ action[4] }}</textarea>
+        <div class="form-text">Provide a detailed description of the action.</div>
     </div>
     <div class="mb-3">
-        <label for="action_status" class="form-label">Status</label>
+        <label for="action_status" class="form-label">Action Status</label>
         <select name="action_status" id="action_status" class="form-select">
-            <option value="Open" {% if action[5] == "Open" %}selected{% endif %}>Open</option>
-            <option value="In Progress" {% if action[5] == "In Progress" %}selected{% endif %}>In Progress</option>
-            <option value="Completed" {% if action[5] == "Completed" %}selected{% endif %}>Completed</option>
+            <option value="Plan" {% if action[5] == "Plan" %}selected{% endif %}>Plan</option>
+            <option value="Do" {% if action[5] == "Do" %}selected{% endif %}>Do</option>
+            <option value="Check" {% if action[5] == "Check" %}selected{% endif %}>Check</option>
+            <option value="Action" {% if action[5] == "Action" %}selected{% endif %}>Action</option>
         </select>
+        <div class="form-text">Select the status of the action.</div>
     </div>
-    <button type="submit" class="btn btn-primary">Update Action</button>
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Update Action</button>
+        <a href="{{ url_for('actions.list_and_create_actions') }}" class="btn btn-secondary">Cancel</a>
+    </div>
 </form>

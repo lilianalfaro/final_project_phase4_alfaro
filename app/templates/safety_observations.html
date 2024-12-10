@@ -6,6 +6,96 @@
 <div class="container mt-4">
     <h1 class="mb-4">Safety Observations</h1>
 
+ <!-- Add Observation Button -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addObservationModal">
+        Add New Observation
+    </button>
+
+    <!-- Add Observation Modal -->
+<div class="modal fade" id="addObservationModal" tabindex="-1" aria-labelledby="addObservationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addObservationModalLabel">Add New Observation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('safety_observations.list_and_create_safety_observations') }}" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" name="date" id="date" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="time" class="form-label">Time</label>
+                        <input type="time" name="time" id="time" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location</label>
+                        <select name="location" id="location" class="form-select">
+                            <option value="Milly">Milly</option>
+                            <option value="LaGrange">LaGrange</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="commodity" class="form-label">Commodity</label>
+                        <select name="commodity_type" id="commodity-modal" class="form-select" onchange="updateModalOperations()">
+                            <option value="Van">Van</option>
+                            <option value="Fire">Fire</option>
+                            <option value="Truck">Truck</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="operation" class="form-label">Operation</label>
+                        <select name="operation" id="operation-modal" class="form-select">
+                            <!-- Operations will be populated dynamically -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select name="category" id="category-modal" class="form-select" onchange="updateModalSubcategories()">
+                            <option value="Safety">Safety</option>
+                            <option value="Delivery">Delivery</option>
+                            <option value="Quality">Quality</option>
+                            <option value="CI">CI</option>
+                            <option value="Cost">Cost</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="sub_category" class="form-label">Subcategory</label>
+                        <select name="sub_category" id="sub_category-modal" class="form-select">
+                            <!-- Subcategories will be populated dynamically -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                     <label for="severity" class="form-label">Severity</label>
+                     <select name="severity" id="severity" class="form-select">
+                         <option value="Low">Low</option>
+                         <option value="Medium">Medium</option>
+                         <option value="High">High</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                     <label for="status" class="form-label">Status</label>
+                      <select name="status" id="status" class="form-select">
+                          <option value="Open">Open</option>
+                          <option value="Under Review">Under Review</option>
+                          <option value="Resolved">Resolved</option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea name="description" id="description" class="form-control" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add Observation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
     <!-- Filters Section -->
 <div class="row">
     <div class="col-md-4">
@@ -144,79 +234,7 @@
         </tbody>
     </table>
 
-    <!-- Add Observation Button -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addObservationModal">
-        Add New Observation
-    </button>
-
-    <!-- Add Observation Modal -->
-<div class="modal fade" id="addObservationModal" tabindex="-1" aria-labelledby="addObservationModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addObservationModalLabel">Add New Observation</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form action="{{ url_for('safety_observations.list_and_create_safety_observations') }}" method="POST">
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="date" class="form-label">Date</label>
-                        <input type="date" name="date" id="date" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="time" class="form-label">Time</label>
-                        <input type="time" name="time" id="time" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="location" class="form-label">Location</label>
-                        <select name="location" id="location" class="form-select">
-                            <option value="Milly">Milly</option>
-                            <option value="LaGrange">LaGrange</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="commodity" class="form-label">Commodity</label>
-                        <select name="commodity_type" id="commodity-modal" class="form-select" onchange="updateModalOperations()">
-                            <option value="Van">Van</option>
-                            <option value="Fire">Fire</option>
-                            <option value="Truck">Truck</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="operation" class="form-label">Operation</label>
-                        <select name="operation" id="operation-modal" class="form-select">
-                            <!-- Operations will be populated dynamically -->
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="category" class="form-label">Category</label>
-                        <select name="category" id="category-modal" class="form-select" onchange="updateModalSubcategories()">
-                            <option value="Safety">Safety</option>
-                            <option value="Delivery">Delivery</option>
-                            <option value="Quality">Quality</option>
-                            <option value="CI">CI</option>
-                            <option value="Cost">Cost</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="sub_category" class="form-label">Subcategory</label>
-                        <select name="sub_category" id="sub_category-modal" class="form-select">
-                            <!-- Subcategories will be populated dynamically -->
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="description" class="form-label">Description</label>
-                        <textarea name="description" id="description" class="form-control" rows="3" required></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Add Observation</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+    <!-- Add JavaScript Below the Table -->
 
 <script>
     const operationsByCommodity = {
