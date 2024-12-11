@@ -6,17 +6,17 @@
 <div class="container mt-4">
     <h1 class="mb-4">Employees</h1>
 
-    <!-- Filter Section -->
+    <!-- Filter Section Function-->
     <form class="row mb-4" method="GET" action="{{ url_for('employees.list_and_create_employees') }}">
         <div class="col-md-3">
             <label for="filter_role" class="form-label">Filter by Role</label>
             <select name="filter_role" id="filter_role" class="form-select">
                 <option value="">All Roles</option>
-                <option value="Observer" {% if request.args.get('filter_role') == 'Observer' %}selected{% endif %}>Observer</option>
-                <option value="Manager" {% if request.args.get('filter_role') == 'Manager' %}selected{% endif %}>Manager</option>
-                <option value="Admin" {% if request.args.get('filter_role') == 'Admin' %}selected{% endif %}>Admin</option>
-                <option value="Supervisor" {% if request.args.get('filter_role') == 'Supervisor' %}selected{% endif %}>Supervisor</option>
-                <option value="Inspector" {% if request.args.get('filter_role') == 'Inspector' %}selected{% endif %}>Inspector</option>
+                    <option value="Observer" {% if filter_role == 'Observer' %}selected{% endif %}>Observer</option>
+                    <option value="Manager" {% if filter_role == 'Manager' %}selected{% endif %}>Manager</option>
+                    <option value="Admin" {% if filter_role == 'Admin' %}selected{% endif %}>Admin</option>
+                    <option value="Supervisor" {% if filter_role == 'Supervisor' %}selected{% endif %}>Supervisor</option>
+                    <option value="Inspector" {% if filter_role == 'Inspector' %}selected{% endif %}>Inspector</option>
             </select>
         </div>
         <div class="col-md-3 align-self-end">

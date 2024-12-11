@@ -29,10 +29,21 @@ def list_and_create_employees():
         flash('New employee added successfully!', 'success')
         return redirect(url_for('employees.list_and_create_employees'))
 
-    # Fetch all employees in dictionary format
-    cursor.execute('SELECT * FROM employees')
+    # Fetch filter parameter from the request
+    filter_role = request.args.get('filter_role', '')
+
+    # Build the query dynamically based on the filter
+    query = 'SELECT * FROM employees WHERE 1=1'
+    params = []
+    if filter_role:
+        query += ' AND role = %s'
+        params.append(filter_role)
+
+    cursor.execute(query, params)
     all_employees = cursor.fetchall()
+
     return render_template('employees.html', employees=all_employees)
+
 
 @employees.route('/update_employee/<int:employee_id>', methods=['GET', 'POST'])
 def update_employee(employee_id):

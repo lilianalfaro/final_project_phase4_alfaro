@@ -21,6 +21,9 @@
             <div id="chart-time" style="height: 400px;"></div>
         </div>
     </div>
+        <!-- Observations by Employee -->
+        <div class="col-md-6">
+            <div id="chart-employee" style="height: 400px;"></div>
 </div>
 
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -63,6 +66,20 @@
                 x: x,
                 y: y
             }], {title: 'Observations Over Time'});
+        });
+
+    // Fetch and render Observations by Employee
+    fetch('/api/observations_by_employee')
+        .then(response => response.json())
+        .then(data => {
+            const labels = data.map(item => item.employee_name);
+            const values = data.map(item => item.count);
+
+            Plotly.newPlot('chart-employee', [{
+                type: 'bar',
+                x: labels,
+                y: values
+            }], {title: 'Observations by Employee'});
         });
 </script>
 {% endblock %}

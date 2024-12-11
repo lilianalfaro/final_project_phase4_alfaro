@@ -6,12 +6,90 @@
 <div class="container mt-4">
     <h1 class="mb-4">Safety Observations</h1>
 
- <!-- Add Observation Button -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addObservationModal">
+    <!-- Add Observation Button -->
+    <button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addObservationModal">
         Add New Observation
     </button>
 
-    <!-- Add Observation Modal -->
+    <!-- Filter Section -->
+    <!-- Filter Section -->
+<form class="row mb-4" method="GET" action="{{ url_for('safety_observations.list_and_create_safety_observations') }}">
+    <div class="col-md-3">
+        <label for="filter_commodity" class="form-label">Commodity</label>
+        <select name="filter_commodity" id="filter_commodity" class="form-select" onchange="updateFilterOperations()">
+            <option value="">Select Commodity</option>
+            <option value="Van" {% if filter_commodity == 'Van' %}selected{% endif %}>Van</option>
+            <option value="Fire" {% if filter_commodity == 'Fire' %}selected{% endif %}>Fire</option>
+            <option value="Truck" {% if filter_commodity == 'Truck' %}selected{% endif %}>Truck</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label for="filter_operation" class="form-label">Operation</label>
+        <select name="filter_operation" id="filter_operation" class="form-select">
+            <option value="">Select Operation</option>
+            <!-- Operations dynamically updated by JavaScript -->
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label for="filter_category" class="form-label">Category</label>
+        <select name="filter_category" id="filter_category" class="form-select">
+            <option value="">Select Category</option>
+            <option value="Safety" {% if filter_category == 'Safety' %}selected{% endif %}>Safety</option>
+            <option value="Delivery" {% if filter_category == 'Delivery' %}selected{% endif %}>Delivery</option>
+            <option value="Quality" {% if filter_category == 'Quality' %}selected{% endif %}>Quality</option>
+            <option value="CI" {% if filter_category == 'CI' %}selected{% endif %}>CI</option>
+            <option value="Cost" {% if filter_category == 'Cost' %}selected{% endif %}>Cost</option>
+        </select>
+    </div>
+    <div class="col-md-3 align-self-end">
+        <button type="submit" class="btn btn-primary w-100">Apply Filter</button>
+    </div>
+</form>
+
+
+    <!-- Observations Table -->
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Location</th>
+                <th>Commodity</th>
+                <th>Operation</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Severity</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for obs in observations %}
+            <tr>
+                <td>{{ obs['safety_observation_id'] }}</td>
+                <td>{{ obs['date'] }}</td>
+                <td>{{ obs['time'] }}</td>
+                <td>{{ obs['location'] }}</td>
+                <td>{{ obs['commodity_type'] }}</td>
+                <td>{{ obs['operation'] }}</td>
+                <td>{{ obs['category'] }}</td>
+                <td>{{ obs['description'] }}</td>
+                <td>{{ obs['severity'] }}</td>
+                <td>{{ obs['status'] }}</td>
+                <td>
+                    <a href="{{ url_for('safety_observations.update_safety_observation', observation_id=obs['safety_observation_id']) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <form action="{{ url_for('safety_observations.delete_safety_observation', observation_id=obs['safety_observation_id']) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Add Observation Modal -->
 <div class="modal fade" id="addObservationModal" tabindex="-1" aria-labelledby="addObservationModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -47,7 +125,7 @@
                     <div class="mb-3">
                         <label for="operation" class="form-label">Operation</label>
                         <select name="operation" id="operation-modal" class="form-select">
-                            <!-- Operations will be populated dynamically -->
+                            <!-- Operations will be dynamically updated -->
                         </select>
                     </div>
                     <div class="mb-3">
@@ -63,24 +141,24 @@
                     <div class="mb-3">
                         <label for="sub_category" class="form-label">Subcategory</label>
                         <select name="sub_category" id="sub_category-modal" class="form-select">
-                            <!-- Subcategories will be populated dynamically -->
+                            <!-- Subcategories will be dynamically updated -->
                         </select>
                     </div>
                     <div class="mb-3">
-                     <label for="severity" class="form-label">Severity</label>
-                     <select name="severity" id="severity" class="form-select">
-                         <option value="Low">Low</option>
-                         <option value="Medium">Medium</option>
-                         <option value="High">High</option>
+                        <label for="severity" class="form-label">Severity</label>
+                        <select name="severity" id="severity" class="form-select">
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                     <label for="status" class="form-label">Status</label>
-                      <select name="status" id="status" class="form-select">
-                          <option value="Open">Open</option>
-                          <option value="Under Review">Under Review</option>
-                          <option value="Resolved">Resolved</option>
-                      </select>
+                        <label for="status" class="form-label">Status</label>
+                        <select name="status" id="status" class="form-select">
+                            <option value="Open">Open</option>
+                            <option value="Under Review">Under Review</option>
+                            <option value="Resolved">Resolved</option>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
@@ -96,225 +174,25 @@
     </div>
 </div>
 
-    <!-- Filters Section -->
-<div class="row">
-    <div class="col-md-4">
-        <label for="commodityFilter">Commodity</label>
-        <select id="commodityFilter" class="form-select">
-            <option value="">Select Commodity</option>
-            <option value="Van">Van</option>
-            <option value="Truck">Truck</option>
-            <option value="Fire">Fire</option>
-        </select>
-    </div>
-    <div class="col-md-4">
-        <label for="operationFilter">Operation</label>
-        <select id="operationFilter" class="form-select">
-            <option value="">Select Operation</option>
-        </select>
-    </div>
-    <div class="col-md-4">
-        <label for="categoryFilter">Category</label>
-        <select id="categoryFilter" class="form-select">
-            <option value="">Select Category</option>
-            <option value="Safety">Safety</option>
-            <option value="Delivery">Delivery</option>
-            <option value="Quality">Quality</option>
-            <option value="CI">CI</option>
-            <option value="Cost">Cost</option>
-        </select>
-    </div>
-</div>
-
-<!-- Add JavaScript Below the Filters -->
-<script>
-    const operations = {
-        Van: [
-            "Op 10: Rear Frames",
-            "Op 20: Sub Frames",
-            "Op 30: Side Walls",
-            "Op 35: Front Wall",
-            "Op 40: Flooring",
-            "Op 50: Boxing",
-            "Op 60: Lining",
-            "Op 70: Roofing",
-            "Op 80: Mounting",
-            "Op 85: Specialty",
-            "Op 90: Liftgate",
-            "Op 100: Paint",
-            "Op 120: QC Final Inspection"
-        ],
-        Truck: [
-            "Op 5: Pre-Wash",
-            "Op 10: Welding",
-            "Op 20: Truck Install",
-            "Op 30: Paint",
-            "Op 40: Wash Way",
-            "Op 50: QC Final Inspection"
-        ],
-        Fire: [
-            "Body Prep",
-            "Paint",
-            "Fabrication",
-            "Console",
-            "Op 10: Pre-Wire",
-            "Op 20: Body Install",
-            "Op 30: Plumbing",
-            "Op 40: Electrical Final",
-            "Op 50: Final Inspection",
-            "QRT",
-            "Detail"
-        ]
-    };
-
-    document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById("commodityFilter").addEventListener("change", function () {
-            const selectedCommodity = this.value;
-            const operationFilterDropdown = document.getElementById("operationFilter");
-
-            console.log("Selected Commodity:", selectedCommodity);
-
-            operationFilterDropdown.innerHTML = '<option value="">Select Operation</option>';
-
-            if (operations[selectedCommodity]) {
-                operations[selectedCommodity].forEach(op => {
-                    const option = document.createElement("option");
-                    option.value = op;
-                    option.textContent = op;
-                    operationFilterDropdown.appendChild(option);
-                });
-                console.log("Updated Operations:", operations[selectedCommodity]);
-            }
-        });
-    });
-</script>
-
-
-
-
-    <!-- Observations Table -->
-    <table class="table table-striped table-bordered">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Location</th>
-                <th>Commodity</th>
-                <th>Operation</th>
-                <th>Category</th>
-                <th>Subcategory</th>
-                <th>Description</th>
-                <th>Severity</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for obs in observations %}
-            <tr>
-                <td>{{ obs['safety_observation_id'] }}</td>
-                <td>{{ obs['date'] }}</td>
-                <td>{{ obs['time'] }}</td>
-                <td>{{ obs['location'] }}</td>
-                <td>{{ obs['commodity_type'] }}</td>
-                <td>{{ obs['operation'] }}</td>
-                <td>{{ obs['category'] }}</td>
-                <td>{{ obs['sub_category'] }}</td>
-                <td>{{ obs['description'] }}</td>
-                <td>{{ obs['severity'] }}</td>
-                <td>{{ obs['status'] }}</td>
-                <td>
-                    <!-- Edit and Delete Buttons -->
-                    <button class="btn btn-sm btn-warning">Edit</button>
-                    <button class="btn btn-sm btn-danger">Delete</button>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <!-- Add JavaScript Below the Table -->
-
 <script>
     const operationsByCommodity = {
-        "Van": [
-            "Op 10: Rear Frames",
-            "Op 20: Sub Frames",
-            "Op 30: Side Walls",
-            "Op 35: Front Wall",
-            "Op 40: Flooring",
-            "Op 50: Boxing",
-            "Op 60: Lining",
-            "Op 70: Roofing",
-            "Op 80: Mounting",
-            "Op 85: Specialty",
-            "Op 90: Liftgate",
-            "Op 100: Paint",
-            "Op 120: QC Final Inspection"
-        ],
-        "Fire": [
-            "Body Prep",
-            "Paint",
-            "Fabrication",
-            "Console",
-            "Op 10: Pre-Wire",
-            "Op 20: Body Install",
-            "Op 30: Plumbing",
-            "Op 40: Electrical Final",
-            "Op 50: Final Inspection",
-            "QRT",
-            "Detail"
-        ],
-        "Truck": [
-            "Op 5: Pre-Wash",
-            "Op 10: Welding",
-            "Op 20: Truck Install",
-            "Op 30: Paint",
-            "Op 40: Wash Way",
-            "Op 50: QC Final Inspection"
-        ]
+        "Van": ["Op 10: Rear Frames", "Op 20: Sub Frames", "Op 30: Side Walls", "Op 35: Front Wall", "Op 40: Flooring", "Op 50: Boxing", "Op 60: Lining", "Op 70: Roofing", "Op 80: Mounting", "Op 85: Specialty", "Op 90: Liftgate", "Op 100: Paint", "Op 120: QC Final Inspection"],
+        "Fire": ["Body Prep", "Paint", "Fabrication", "Console", "Op 10: Pre-Wire", "Op 20: Body Install", "Op 30: Plumbing", "Op 40: Electrical Final", "Op 50: Final Inspection", "QRT", "Detail"],
+        "Truck": ["Op 5: Pre-Wash", "Op 10: Welding", "Op 20: Truck Install", "Op 30: Paint", "Op 40: Wash Way", "Op 50: QC Final Inspection"]
     };
 
     const subcategoriesByCategory = {
-        "Safety": [
-            "Electrical",
-            "Spill",
-            "Trip Hazard",
-            "Unsafe Behavior",
-            "Leaks",
-            "Poor Equipment"
-        ],
-        "Delivery": [
-            "Late",
-            "Misdelivery",
-            "Incorrect Documentation"
-        ],
-        "Quality": [
-            "Defects",
-            "Rework",
-            "Customer Complaints"
-        ],
-        "CI": [
-            "Process Improvement",
-            "Training",
-            "Tool Optimization"
-        ],
-        "Cost": [
-            "Budget Overrun",
-            "Inefficiency",
-            "Scrap"
-        ]
+        "Safety": ["Electrical", "Spill", "Trip Hazard", "Unsafe Behavior", "Leaks", "Poor Equipment"],
+        "Delivery": ["Late", "Misdelivery", "Incorrect Documentation"],
+        "Quality": ["Defects", "Rework", "Customer Complaints"],
+        "CI": ["Process Improvement", "Training", "Tool Optimization"],
+        "Cost": ["Budget Overrun", "Inefficiency", "Scrap"]
     };
 
     function updateModalOperations() {
         const commodity = document.getElementById("commodity-modal").value;
         const operationDropdown = document.getElementById("operation-modal");
-
-        // Clear existing options
         operationDropdown.innerHTML = "";
-
-        // Populate new options
         if (commodity in operationsByCommodity) {
             operationsByCommodity[commodity].forEach(op => {
                 const option = document.createElement("option");
@@ -328,11 +206,7 @@
     function updateModalSubcategories() {
         const category = document.getElementById("category-modal").value;
         const subCategoryDropdown = document.getElementById("sub_category-modal");
-
-        // Clear existing options
         subCategoryDropdown.innerHTML = "";
-
-        // Populate new options
         if (category in subcategoriesByCategory) {
             subcategoriesByCategory[category].forEach(sub => {
                 const option = document.createElement("option");
@@ -342,6 +216,23 @@
             });
         }
     }
+
+    function updateFilterOperations() {
+        const commodity = document.getElementById("filter_commodity").value;
+        const operationDropdown = document.getElementById("filter_operation");
+        operationDropdown.innerHTML = '<option value="">Select Operation</option>';
+        if (commodity in operationsByCommodity) {
+            operationsByCommodity[commodity].forEach(op => {
+                const option = document.createElement("option");
+                option.value = op;
+                option.textContent = op;
+                operationDropdown.appendChild(option);
+            });
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        updateFilterOperations();
+    });
 </script>
-</div>
 {% endblock %}

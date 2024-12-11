@@ -8,7 +8,7 @@ def list_and_create_safety_observations():
     db = get_db()
     cursor = db.cursor()
 
-    # Handle POST request to add a new safety observation
+    # Handle POST request to add a new observation
     if request.method == 'POST':
         date = request.form['date']
         time = request.form['time']
@@ -17,27 +17,50 @@ def list_and_create_safety_observations():
         operation = request.form['operation']
         category = request.form['category']
         sub_category = request.form['sub_category']
-        description = request.form['description']
         severity = request.form['severity']
         status = request.form['status']
+        description = request.form['description']
 
-        # Insert into database
         cursor.execute(
             '''
-            INSERT INTO safety_observations (date, time, location, commodity_type, operation, category, sub_category, description, severity, status)
+            INSERT INTO safety_observations 
+            (date, time, location, commodity_type, operation, category, sub_category, severity, status, description) 
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             ''',
-            (date, time, location, commodity_type, operation, category, sub_category, description, severity, status)
+            (date, time, location, commodity_type, operation, category, sub_category, severity, status, description)
         )
         db.commit()
-        flash('Safety observation added successfully!', 'success')
+        flash('New observation added successfully!', 'success')
         return redirect(url_for('safety_observations.list_and_create_safety_observations'))
 
-    # Handle GET request to display safety observations
-    cursor.execute('SELECT * FROM safety_observations')
-    all_observations = cursor.fetchall()
+    # Apply filters
+    filter_commodity = request.args.get('filter_commodity', '')
+    filter_operation = request.args.get('filter_operation', '')
+    filter_category = request.args.get('filter_category', '')
 
-    return render_template('safety_observations.html', observations=all_observations)
+    query = 'SELECT * FROM safety_observations WHERE 1=1'
+    params = []
+
+    if filter_commodity:
+        query += ' AND commodity_type = %s'
+        params.append(filter_commodity)
+    if filter_operation:
+        query += ' AND operation = %s'
+        params.append(filter_operation)
+    if filter_category:
+        query += ' AND category = %s'
+        params.append(filter_category)
+
+    cursor.execute(query, params)
+    observations = cursor.fetchall()
+
+    return render_template(
+        'safety_observations.html',
+        observations=observations,
+        filter_commodity=filter_commodity,
+        filter_operation=filter_operation,
+        filter_category=filter_category
+    )
 
 @safety_observations.route('/update_safety_observation/<int:observation_id>', methods=['GET', 'POST'])
 def update_safety_observation(observation_id):

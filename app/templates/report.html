@@ -7,7 +7,7 @@
     <h1 class="mb-4">Generate Safety Observations Report</h1>
 
     <!-- Filters Form -->
-    <form action="/reports/generate_report" method="POST">
+    <form action="{{ url_for('reports.generate_report') }}" method="POST">
         <div class="row">
             <div class="col-md-4 mb-3">
                 <label for="commodity" class="form-label">Commodity</label>
@@ -62,7 +62,7 @@
                 <td>{{ observation['date'] }}</td>
                 <td>{{ observation['time'] }}</td>
                 <td>{{ observation['location'] }}</td>
-                <td>{{ observation['commodity'] }}</td>
+                <td>{{ observation['commodity_type'] }}</td>
                 <td>{{ observation['operation'] }}</td>
                 <td>{{ observation['severity'] }}</td>
                 <td>{{ observation['status'] }}</td>

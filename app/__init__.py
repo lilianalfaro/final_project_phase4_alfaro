@@ -18,7 +18,7 @@ app.register_blueprint(safety_observations)
 app.register_blueprint(employees)
 app.register_blueprint(dashboard)
 app.register_blueprint(reports)
-app.register_blueprint(actions, url_prefix='/actions')
+app.register_blueprint(actions)
 
 
 from . import routes

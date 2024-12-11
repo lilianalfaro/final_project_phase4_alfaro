@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block title %}Update Safety Observation{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Update Safety Observation</h1>
+    <form action="{{ url_for('safety_observations.update_safety_observation', observation_id=observation['safety_observation_id']) }}" method="POST">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="date" class="form-label">Date</label>
+                <input type="date" name="date" id="date" class="form-control" value="{{ observation['date'] }}" required>
+            </div>
+            <div class="col-md-6">
+                <label for="time" class="form-label">Time</label>
+                <input type="time" name="time" id="time" class="form-control" value="{{ observation['time'] }}" required>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="location" class="form-label">Location</label>
+                <select name="location" id="location" class="form-select" required>
+                    <option value="Milly" {% if observation['location'] == 'Milly' %}selected{% endif %}>Milly</option>
+                    <option value="LaGrange" {% if observation['location'] == 'LaGrange' %}selected{% endif %}>LaGrange</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="commodity_type" class="form-label">Commodity</label>
+                <select name="commodity_type" id="commodity_type" class="form-select" onchange="updateOperations()" required>
+                    <option value="Van" {% if observation['commodity_type'] == 'Van' %}selected{% endif %}>Van</option>
+                    <option value="Fire" {% if observation['commodity_type'] == 'Fire' %}selected{% endif %}>Fire</option>
+                    <option value="Truck" {% if observation['commodity_type'] == 'Truck' %}selected{% endif %}>Truck</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="operation" class="form-label">Operation</label>
+            <select name="operation" id="operation" class="form-select" required>
+                <!-- Options populated by JavaScript below -->
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="category" class="form-label">Category</label>
+            <select name="category" id="category" class="form-select" onchange="updateSubcategories()" required>
+                <option value="Safety" {% if observation['category'] == 'Safety' %}selected{% endif %}>Safety</option>
+                <option value="Delivery" {% if observation['category'] == 'Delivery' %}selected{% endif %}>Delivery</option>
+                <option value="Quality" {% if observation['category'] == 'Quality' %}selected{% endif %}>Quality</option>
+                <option value="CI" {% if observation['category'] == 'CI' %}selected{% endif %}>CI</option>
+                <option value="Cost" {% if observation['category'] == 'Cost' %}selected{% endif %}>Cost</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="sub_category" class="form-label">Subcategory</label>
+            <select name="sub_category" id="sub_category" class="form-select" required>
+                <!-- Options populated by JavaScript below -->
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="severity" class="form-label">Severity</label>
+            <select name="severity" id="severity" class="form-select" required>
+                <option value="Low" {% if observation['severity'] == 'Low' %}selected{% endif %}>Low</option>
+                <option value="Medium" {% if observation['severity'] == 'Medium' %}selected{% endif %}>Medium</option>
+                <option value="High" {% if observation['severity'] == 'High' %}selected{% endif %}>High</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="status" class="form-label">Status</label>
+            <select name="status" id="status" class="form-select" required>
+                <option value="Open" {% if observation['status'] == 'Open' %}selected{% endif %}>Open</option>
+                <option value="Under Review" {% if observation['status'] == 'Under Review' %}selected{% endif %}>Under Review</option>
+                <option value="Resolved" {% if observation['status'] == 'Resolved' %}selected{% endif %}>Resolved</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea name="description" id="description" class="form-control" rows="3" required>{{ observation['description'] }}</textarea>
+        </div>
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Update Observation</button>
+            <a href="{{ url_for('safety_observations.list_and_create_safety_observations') }}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    const operationsByCommodity = {
+        "Van": ["Op 10: Rear Frames", "Op 20: Sub Frames", "Op 30: Side Walls", "Op 35: Front Wall", "Op 40: Flooring", "Op 50: Boxing", "Op 60: Lining", "Op 70: Roofing", "Op 80: Mounting", "Op 85: Specialty", "Op 90: Liftgate", "Op 100: Paint", "Op 120: QC Final Inspection"],
+        "Fire": ["Body Prep", "Paint", "Fabrication", "Console", "Op 10: Pre-Wire", "Op 20: Body Install", "Op 30: Plumbing", "Op 40: Electrical Final", "Op 50: Final Inspection", "QRT", "Detail"],
+        "Truck": ["Op 5: Pre-Wash", "Op 10: Welding", "Op 20: Truck Install", "Op 30: Paint", "Op 40: Wash Way", "Op 50: QC Final Inspection"]
+    };
+
+    const subcategoriesByCategory = {
+        "Safety": ["Electrical", "Spill", "Trip Hazard", "Unsafe Behavior", "Leaks", "Poor Equipment"],
+        "Delivery": ["Late", "Misdelivery", "Incorrect Documentation"],
+        "Quality": ["Defects", "Rework", "Customer Complaints"],
+        "CI": ["Process Improvement", "Training", "Tool Optimization"],
+        "Cost": ["Budget Overrun", "Inefficiency", "Scrap"]
+    };
+
+    function updateOperations() {
+        const commodity = document.getElementById("commodity_type").value;
+        const operationDropdown = document.getElementById("operation");
+        operationDropdown.innerHTML = "";
+        if (commodity in operationsByCommodity) {
+            operationsByCommodity[commodity].forEach(op => {
+                const option = document.createElement("option");
+                option.value = op;
+                option.textContent = op;
+                operationDropdown.appendChild(option);
+            });
+        }
+
+        // Select the current operation
+        const currentOperation = "{{ observation['operation'] }}";
+        for (let i = 0; i < operationDropdown.options.length; i++) {
+            if (operationDropdown.options[i].value === currentOperation) {
+                operationDropdown.selectedIndex = i;
+                break;
+            }
+        }
+    }
+
+    function updateSubcategories() {
+        const category = document.getElementById("category").value;
+        const subCategoryDropdown = document.getElementById("sub_category");
+        subCategoryDropdown.innerHTML = "";
+        if (category in subcategoriesByCategory) {
+            subcategoriesByCategory[category].forEach(sub => {
+                const option = document.createElement("option");
+                option.value = sub;
+                option.textContent = sub;
+                subCategoryDropdown.appendChild(option);
+            });
+        }
+
+        // Select the current sub_category
+        const currentSubCategory = "{{ observation['sub_category'] }}";
+        for (let i = 0; i < subCategoryDropdown.options.length; i++) {
+            if (subCategoryDropdown.options[i].value === currentSubCategory) {
+                subCategoryDropdown.selectedIndex = i;
+                break;
+            }
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        updateOperations();
+        updateSubcategories();
+    });
+</script>
+
+{% endblock %}

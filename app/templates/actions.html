@@ -11,6 +11,7 @@
         Add New Action
     </button>
 
+    <!-- Actions Table -->
     <table class="table table-striped table-bordered">
         <thead class="table-dark">
             <tr>
@@ -24,18 +25,82 @@
             </tr>
         </thead>
         <tbody>
-            {% for action in actions %}
+            {% for act in actions %}
             <tr>
-                <td>{{ action['action_id'] }}</td>
-                <td>{{ action['observation_description'] }}</td>
-                <td>{{ action['employee_name'] }}</td>
-                <td>{{ action['action_date'] }}</td>
-                <td>{{ action['action_description'] }}</td>
-                <td>{{ action['action_status'] }}</td>
+                <td>{{ act['action_id'] }}</td>
+                <td>{{ act['observation_description'] }}</td>
+                <td>{{ act['employee_name'] }}</td>
+                <td>{{ act['action_date'] }}</td>
+                <td>{{ act['action_description'] }}</td>
+                <td>{{ act['action_status'] }}</td>
                 <td>
-                    <form action="{{ url_for('actions.delete_action', action_id=action['action_id']) }}" method="post" style="display:inline;">
+                    <!-- Edit Button triggers the update modal -->
+                    <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#updateActionModal{{ act['action_id'] }}">
+                        Edit
+                    </button>
+                    <form action="{{ url_for('actions.delete_action', action_id=act['action_id']) }}" method="post" style="display:inline;">
                         <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                     </form>
+
+                    <!-- Update Action Modal -->
+                    <div class="modal fade" id="updateActionModal{{ act['action_id'] }}" tabindex="-1" aria-labelledby="updateActionModalLabel{{ act['action_id'] }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form action="{{ url_for('actions.update_action', action_id=act['action_id']) }}" method="POST">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="updateActionModalLabel{{ act['action_id'] }}">Update Action</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="safety_observation_id_{{ act['action_id'] }}" class="form-label">Safety Observation</label>
+                                            <select name="safety_observation_id" id="safety_observation_id_{{ act['action_id'] }}" class="form-select" required>
+                                                {% for obs in safety_observations %}
+                                                <option value="{{ obs['safety_observation_id'] }}"
+                                                    {% if obs['safety_observation_id'] == act['safety_observation_id'] %}selected{% endif %}>
+                                                    {{ obs['description'] }}
+                                                </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="employee_id_{{ act['action_id'] }}" class="form-label">Assigned Employee</label>
+                                            <select name="employee_id" id="employee_id_{{ act['action_id'] }}" class="form-select" required>
+                                                {% for emp in employees %}
+                                                <option value="{{ emp['employee_id'] }}"
+                                                    {% if emp['employee_id'] == act['employee_id'] %}selected{% endif %}>
+                                                    {{ emp['full_name'] if emp['full_name'] else emp['first_name'] ~ ' ' ~ emp['last_name'] }}
+                                                </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="action_date_{{ act['action_id'] }}" class="form-label">Action Date</label>
+                                            <input type="date" name="action_date" id="action_date_{{ act['action_id'] }}" class="form-control" value="{{ act['action_date'] }}" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="action_description_{{ act['action_id'] }}" class="form-label">Action Description</label>
+                                            <textarea name="action_description" id="action_description_{{ act['action_id'] }}" class="form-control" rows="3" required>{{ act['action_description'] }}</textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="action_status_{{ act['action_id'] }}" class="form-label">Action Status</label>
+                                            <select name="action_status" id="action_status_{{ act['action_id'] }}" class="form-select" required>
+                                                <option value="Plan" {% if act['action_status'] == "Plan" %}selected{% endif %}>Plan</option>
+                                                <option value="Do" {% if act['action_status'] == "Do" %}selected{% endif %}>Do</option>
+                                                <option value="Check" {% if act['action_status'] == "Check" %}selected{% endif %}>Check</option>
+                                                <option value="Action" {% if act['action_status'] == "Action" %}selected{% endif %}>Action</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Update Action</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Update Action Modal -->
                 </td>
             </tr>
             {% endfor %}
@@ -55,16 +120,18 @@
                         <div class="mb-3">
                             <label for="safety_observation_id" class="form-label">Safety Observation</label>
                             <select name="safety_observation_id" id="safety_observation_id" class="form-select" required>
-                                {% for observation in safety_observations %}
-                                <option value="{{ observation['safety_observation_id'] }}">{{ observation['description'] }}</option>
+                                <option value="">Select Safety Observation</option>
+                                {% for obs in safety_observations %}
+                                <option value="{{ obs['safety_observation_id'] }}">{{ obs['description'] }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="employee_id" class="form-label">Assigned Employee</label>
                             <select name="employee_id" id="employee_id" class="form-select" required>
-                                {% for employee in employees %}
-                                <option value="{{ employee['employee_id'] }}">{{ employee['employee_name'] }}</option>
+                                <option value="">Select Employee</option>
+                                {% for emp in employees %}
+                                <option value="{{ emp['employee_id'] }}">{{ emp['full_name'] }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -74,11 +141,11 @@
                         </div>
                         <div class="mb-3">
                             <label for="action_description" class="form-label">Action Description</label>
-                            <textarea name="action_description" id="action_description" class="form-control" required></textarea>
+                            <textarea name="action_description" id="action_description" class="form-control" rows="3" required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="action_status" class="form-label">Action Status</label>
-                            <select name="action_status" id="action_status" class="form-select">
+                            <select name="action_status" id="action_status" class="form-select" required>
                                 <option value="Plan">Plan</option>
                                 <option value="Do">Do</option>
                                 <option value="Check">Check</option>
